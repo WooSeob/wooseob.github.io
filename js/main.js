@@ -43,3 +43,10 @@ function handleKeyPress(event) {
   }
 }
 addEventListener();
+
+function render() {
+  aa.render();
+  requestAnimationFrame(render);
+}
+
+render();
