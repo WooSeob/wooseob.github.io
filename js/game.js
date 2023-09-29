@@ -20,7 +20,8 @@ export default class GameManager {
     console.log(this);
     this.drawEdge();
 
-    this.spawn().draw(this.canvasBoard.ctx);
+    this.current = this.spawn();
+    this.current.draw(this.canvasBoard.ctx);
   }
 
   drawEdge() {
@@ -60,6 +61,11 @@ export default class GameManager {
       this.blockWidth,
       this.blockHeight
     );
+  }
+
+  rotate() {
+    this.current.rotate();
+    this.current.draw(this.canvasBoard.ctx);
   }
 }
 

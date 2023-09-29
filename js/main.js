@@ -31,3 +31,15 @@ function d() {
 d();
 
 const aa = new GameManager(20, 10, new CanvasBoard(canvas));
+
+function addEventListener() {
+  document.removeEventListener("keydown", handleKeyPress);
+  document.addEventListener("keydown", handleKeyPress);
+}
+
+function handleKeyPress(event) {
+  if (event.keyCode === 38) {
+    aa.rotate();
+  }
+}
+addEventListener();
