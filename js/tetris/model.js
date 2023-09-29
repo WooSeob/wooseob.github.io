@@ -42,4 +42,13 @@ export class Tetromino {
 
     this.arr.forEach((row) => row.reverse());
   }
+
+  move(dx, dy) {
+    this.offsetX += dx;
+    this.offsetY += dy;
+  }
+
+  down(dy) {
+    this.move(0, dy);
+  }
 }

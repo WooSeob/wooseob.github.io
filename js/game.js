@@ -21,6 +21,15 @@ export default class GameManager {
     this.drawEdge();
 
     this.current = this.spawn();
+
+    this.timer = new Timer(700, () => {
+      // 바닥에 안닿았으면
+      //  내려가고
+      // 바닥에 닿았으면
+      //  충돌진행 버블 스타트
+      //  새로운 테트로미노 생성
+      this.current.down(this.blockWidth);
+    });
   }
 
   drawEdge() {
@@ -68,7 +77,22 @@ export default class GameManager {
 
   render() {
     this.current.draw(this.canvasBoard.ctx);
+    this.timer.run();
     this.canvasBoard.render();
+  }
+}
+
+export class Timer {
+  constructor(tick, callback) {
+    this.tick = tick;
+    this.start = Date.now();
+    this.callback = callback;
+  }
+  run() {
+    if (Date.now() - this.start > this.tick) {
+      this.callback();
+      this.start = Date.now();
+    }
   }
 }
 
