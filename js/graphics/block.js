@@ -12,6 +12,14 @@ export default class Block {
     ctx.fillRect(this.x, this.y, this.width, this.height);
     this.style?.doStyle(ctx, this);
   }
+
+  clear(ctx) {
+    ctx.clearRect(this.x, this.y, this.width, this.height);
+  }
+
+  ofMove(dx, dy) {
+    return new Block(this.x + dx, this.y + dy, this.width, this.height, this.style);
+  }
 }
 
 export class ClassicStyle {
@@ -62,3 +70,5 @@ export class ClassicStyle {
     })`;
   }
 }
+
+export const createStyle = (color) => new ClassicStyle(color, 60, 0.1);
