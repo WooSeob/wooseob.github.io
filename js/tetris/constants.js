@@ -10,7 +10,11 @@ export const TetrominoTypes = {
     [1, 1],
   ],
   T: [],
-  L: [],
+  L: [
+    [1, 0, 0],
+    [1, 0, 0],
+    [1, 1, 0],
+  ],
   J: [],
   S: [],
   Z: [
@@ -20,4 +24,18 @@ export const TetrominoTypes = {
   ],
 };
 
+export const Actions = {
+  Left: {
+    delta: { x: -1, y: 0 },
+  },
+  Right: {
+    delta: { x: 1, y: 0 },
+  },
+  Down: {
+    delta: { x: 0, y: 1 },
+  },
+  Rotate: {},
+};
+
 Object.freeze(TetrominoTypes);
+Object.freeze(Actions);

@@ -1,4 +1,5 @@
 import GameManager, { CanvasBoard } from "./game.js";
+import { Actions } from "./tetris/constants.js";
 
 const canvas = document.getElementById("main-container");
 const ctx = canvas.getContext("2d");
@@ -39,7 +40,15 @@ function addEventListener() {
 
 function handleKeyPress(event) {
   if (event.keyCode === 38) {
-    aa.rotate();
+    aa.eventBus.emit(Actions.Rotate);
+  }
+  if (event.keyCode === 37) {
+    // left
+    aa.eventBus.emit(Actions.Left);
+  }
+  if (event.keyCode === 39) {
+    // right
+    aa.eventBus.emit(Actions.Right);
   }
 }
 addEventListener();

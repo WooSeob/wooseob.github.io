@@ -1,9 +1,11 @@
 import Block, { createStyle } from "../graphics/block.js";
 
 export class Tetromino {
-  blocks = [];
-  constructor(arr, offsetX, offsetY, color, bWidth, bheight) {
+  // blocks = [];
+  constructor(arr, x, y, offsetX, offsetY, color, bWidth, bheight) {
     this.arr = arr;
+    this.x = x;
+    this.y = y;
     this.offsetX = offsetX;
     this.offsetY = offsetY;
 
@@ -13,8 +15,6 @@ export class Tetromino {
   }
 
   draw(ctx) {
-    this.blocks.forEach((b) => b.clear(ctx));
-    this.blocks = [];
     for (let y = 0; y < this.arr.length; y++) {
       for (let x = 0; x < this.arr[0].length; x++) {
         if (this.arr[y][x] != 1) {
@@ -28,27 +28,66 @@ export class Tetromino {
           createStyle(this.color)
         );
         block.draw(ctx);
-        this.blocks.push(block);
+        // this.blocks.push(block);
       }
     }
+
+    ctx.strokeRect(
+      this.offsetX,
+      this.offsetY,
+      this.bWidth * this.arr.length,
+      this.bheight * this.arr[0].length
+    );
   }
 
-  rotate() {
-    for (let y = 0; y < this.arr.length; ++y) {
+  // clear(ctx) {
+  //   this.blocks.forEach((b) => b.clear(ctx));
+  //   this.blocks = [];
+  //   ctx.clearRect(
+  //     this.offsetX,
+  //     this.offsetY,
+  //     this.bWidth * this.arr.length,
+  //     this.bheight * this.arr[0].length
+  //   );
+  // }
+
+  ofRotate() {
+    const newArr = JSON.parse(JSON.stringify(this.arr));
+
+    for (let y = 0; y < newArr.length; ++y) {
       for (let x = 0; x < y; ++x) {
-        [this.arr[x][y], this.arr[y][x]] = [this.arr[y][x], this.arr[x][y]];
+        [newArr[x][y], newArr[y][x]] = [newArr[y][x], newArr[x][y]];
       }
     }
 
-    this.arr.forEach((row) => row.reverse());
+    newArr.forEach((row) => row.reverse());
+
+    return new Tetromino(
+      newArr,
+      this.x,
+      this.y,
+      this.offsetX,
+      this.offsetY,
+      this.color,
+      this.bWidth,
+      this.bheight
+    );
   }
 
-  move(dx, dy) {
-    this.offsetX += dx;
-    this.offsetY += dy;
+  ofMove(dx, dy) {
+    return new Tetromino(
+      this.arr,
+      this.x + dx,
+      this.y + dy,
+      this.offsetX + dx * this.bWidth,
+      this.offsetY + dy * this.bheight,
+      this.color,
+      this.bWidth,
+      this.bheight
+    );
   }
 
-  down(dy) {
-    this.move(0, dy);
+  ofDown(dy) {
+    return this.ofMove(0, dy);
   }
 }
