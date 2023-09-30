@@ -5,8 +5,10 @@ import { Actions, InternalEvent, getRandomTetrominoType } from "./tetris/constan
 import { Timer, EventBus, rand } from "./utils.js";
 import Board from "./tetris/core.js";
 export default class GameManager {
-  constructor(row, col, canvasBoard) {
+  next;
+  constructor(row, col, canvasBoard, nextCanvasBoard) {
     this.canvasBoard = canvasBoard;
+    this.nextCanvasBoard = nextCanvasBoard;
     this.row = row + 2;
     this.col = col + 2;
 
@@ -83,6 +85,30 @@ export default class GameManager {
   }
 
   spawn() {
+    if (this.next) {
+      const t = this.next;
+      this.next = this._spawnInternal();
+      return t;
+    }
+
+    this.next = this._spawnInternal();
+    return this._spawnInternal();
+  }
+
+  set next(next) {
+    this.next = new Tetromino(
+      JSON.parse(JSON.stringify(next.arr)),
+      next.x,
+      next.y,
+      0,
+      0,
+      next.color,
+      next.bWidth,
+      next.bheight
+    );
+  }
+
+  _spawnInternal() {
     let tetromino = new Tetromino(
       getRandomTetrominoType(),
       0,
@@ -103,6 +129,12 @@ export default class GameManager {
   }
 
   render() {
+    this.nextCanvasBoard.ctx.clearRect(
+      0,
+      0,
+      this.nextCanvasBoard.width,
+      this.nextCanvasBoard.height
+    );
     this.canvasBoard.ctx.clearRect(0, 0, this.canvasBoard.width, this.canvasBoard.height);
 
     const drawBlock = (x, y, color) => {
@@ -123,10 +155,12 @@ export default class GameManager {
         }
       }
     }
+    this.next?.draw(this.nextCanvasBoard.ctx);
     this.current.draw(this.canvasBoard.ctx);
 
     this.timer.run();
     this.canvasBoard.render();
+    this.nextCanvasBoard.render();
   }
 }
 
