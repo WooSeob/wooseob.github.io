@@ -41,8 +41,19 @@ export default class GameManager {
         this.current = this.current.ofMove(Actions.Right.delta.x, Actions.Right.delta.y);
       }
     });
+    this.eventBus.on(Actions.Down, () => {
+      if (this.board.isMoveable(this.current, Actions.Down)) {
+        this.current = this.current.ofMove(Actions.Down.delta.x, Actions.Down.delta.y);
+      }
+    });
 
-    this.timer = new Timer(100, () => {
+    this.eventBus.on(Actions.Drop, () => {
+      while (this.board.isMoveable(this.current, Actions.Down)) {
+        this.current = this.current.ofMove(Actions.Down.delta.x, Actions.Down.delta.y);
+      }
+    });
+
+    this.timer = new Timer(500, () => {
       this.eventBus.emit(InternalEvent.TimerTick);
       this.handle();
     });

@@ -49,6 +49,7 @@ export const Actions = {
     delta: { x: 0, y: 1 },
   },
   Rotate: {},
+  Drop: {},
 };
 
 export const InternalEvent = {
