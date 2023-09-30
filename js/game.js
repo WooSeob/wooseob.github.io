@@ -21,27 +21,6 @@ export default class GameManager {
     console.log(this);
 
     this.current = this.spawn();
-    this.handler = () => {
-      if (this.board.isMoveable(this.current, Actions.Down)) {
-        this.current = this.current.ofDown(1);
-      } else {
-        this.board.updateBoard(this.current);
-
-        let clearLines = this.board.getClearableLines();
-        while (clearLines.length > 0) {
-          this.board.spliceLines(clearLines);
-          this.board.mergeLines(clearLines);
-          clearLines = this.board.getClearableLines();
-        }
-
-        const spawningTetromino = this.spawn();
-        if (this.board.isGameOver(spawningTetromino)) {
-          alert("gameover");
-        }
-
-        this.current = spawningTetromino;
-      }
-    };
 
     this.eventBus = new EventBus();
     this.eventBus.on(Actions.Rotate, () => {
@@ -60,9 +39,32 @@ export default class GameManager {
       }
     });
 
-    this.timer = new Timer(100, this.handler);
+    this.timer = new Timer(100, () => {
+      this.handle();
+    });
   }
 
+  handle() {
+    if (this.board.isMoveable(this.current, Actions.Down)) {
+      this.current = this.current.ofDown(1);
+    } else {
+      this.board.updateBoard(this.current);
+
+      let clearLines = this.board.getClearableLines();
+      while (clearLines.length > 0) {
+        this.board.spliceLines(clearLines);
+        this.board.mergeLines(clearLines);
+        clearLines = this.board.getClearableLines();
+      }
+
+      const spawningTetromino = this.spawn();
+      if (this.board.isGameOver(spawningTetromino)) {
+        alert("gameover");
+      }
+
+      this.current = spawningTetromino;
+    }
+  }
   spawn() {
     return new Tetromino(
       getRandomTetrominoType(),
