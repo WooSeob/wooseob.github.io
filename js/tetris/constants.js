@@ -1,3 +1,5 @@
+import { rand } from "../utils.js";
+
 export const TetrominoTypes = {
   Line: [
     [1, 0, 0, 0],
@@ -9,14 +11,26 @@ export const TetrominoTypes = {
     [1, 1],
     [1, 1],
   ],
-  T: [],
+  T: [
+    [1, 1, 1],
+    [0, 1, 0],
+    [0, 0, 0],
+  ],
   L: [
-    [1, 0, 0],
-    [1, 0, 0],
+    [0, 1, 0],
+    [0, 1, 0],
+    [0, 1, 1],
+  ],
+  J: [
+    [0, 1, 0],
+    [0, 1, 0],
     [1, 1, 0],
   ],
-  J: [],
-  S: [],
+  S: [
+    [0, 1, 1],
+    [1, 1, 0],
+    [0, 0, 0],
+  ],
   Z: [
     [1, 1, 0],
     [0, 1, 1],
@@ -35,6 +49,11 @@ export const Actions = {
     delta: { x: 0, y: 1 },
   },
   Rotate: {},
+};
+
+export const getRandomTetrominoType = () => {
+  const arr = Object.keys(TetrominoTypes);
+  return TetrominoTypes[arr[rand(0, arr.length)]];
 };
 
 Object.freeze(TetrominoTypes);

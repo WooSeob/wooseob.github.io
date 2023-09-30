@@ -1,7 +1,7 @@
 import { Tetromino } from "./tetris/model.js";
 import Block, { createStyle } from "./graphics/block.js";
 import { Colors, getRandomColor } from "./graphics/constants.js";
-import { Actions, TetrominoTypes } from "./tetris/constants.js";
+import { Actions, getRandomTetrominoType } from "./tetris/constants.js";
 import { Timer, EventBus } from "./utils.js";
 export default class GameManager {
   constructor(row, col, canvasBoard) {
@@ -128,7 +128,7 @@ export default class GameManager {
 
   spawn() {
     return new Tetromino(
-      TetrominoTypes.L,
+      getRandomTetrominoType(),
       0,
       0,
       this.offsetX,
