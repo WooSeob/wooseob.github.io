@@ -22,16 +22,18 @@ export default class GameManager {
 
     this.current = this.spawn();
     this.handler = () => {
-      // 바닥에 안닿았으면
-      //  내려가고
-      // 바닥에 닿았으면
-      //  충돌진행 버블 스타트
-      //  새로운 테트로미노 생성
-      // console.log(action);
       if (this.board.isMoveable(this.current, Actions.Down)) {
         this.current = this.current.ofDown(1);
       } else {
         this.board.updateBoard(this.current);
+
+        let clearLines = this.board.getClearableLines();
+        while (clearLines.length > 0) {
+          this.board.spliceLines(clearLines);
+          this.board.mergeLines(clearLines);
+          clearLines = this.board.getClearableLines();
+        }
+
         this.current = this.spawn();
       }
     };

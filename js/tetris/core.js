@@ -81,4 +81,55 @@ export default class Board {
       }
     }
   }
+
+  getClearableLines() {
+    // 일단 구현 먼저
+    // 상하좌우 테두리 제외
+    const lines = [];
+    for (let y = 1; y < this.row - 1; y++) {
+      let clear = true;
+      for (let x = 1; x < this.col - 1; x++) {
+        if (this.board[y][x] == 0) {
+          clear = false;
+          break;
+        }
+      }
+      if (clear) {
+        lines.push(y);
+      }
+    }
+    console.log(lines);
+    return lines;
+  }
+
+  spliceLines(lines) {
+    // 자료구조 바꾸면 최적화 가능할듯
+    lines.forEach((line) => {
+      this.board.splice(line, 1);
+      const newRow = new Array(this.col + 2).fill(0);
+      newRow[0] = { color: Colors.Gray };
+      newRow[this.col - 1] = { color: Colors.Gray };
+
+      this.board.splice(line, 0, newRow);
+    });
+  }
+
+  mergeLines(emptyLines) {
+    emptyLines.forEach((line) => {
+      // 1 ~ 20 중 , 5번 이면
+      this.board.splice(line, 1);
+
+      const newRow = new Array(this.col + 2).fill(0);
+      newRow[0] = { color: Colors.Gray };
+      newRow[this.col - 1] = { color: Colors.Gray };
+
+      this.board.splice(1, 0, newRow);
+    });
+  }
 }
+
+// for (let y = 1; y < this.row - 1; y++) {
+//   for (let x = 1; x < this.col - 1; x++) {
+
+//   }
+// }
