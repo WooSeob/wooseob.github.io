@@ -1,10 +1,16 @@
 export class EventBus {
   callbackByEvent = new Map();
   emit(event, args) {
-    this.callbackByEvent.get(event)(args);
+    const callbacks = this.callbackByEvent.get(event);
+    callbacks?.forEach((element) => {
+      element(args);
+    });
   }
   on(event, callback) {
-    this.callbackByEvent.set(event, callback);
+    if (!this.callbackByEvent.get(event)) {
+      this.callbackByEvent.set(event, []);
+    }
+    this.callbackByEvent.get(event).push(callback);
   }
 }
 
@@ -19,6 +25,14 @@ export class Timer {
       this.callback();
       this.start = Date.now();
     }
+  }
+
+  decrease(val) {
+    if (this.tick - val > 0) {
+      this.tick -= val;
+      return true;
+    }
+    return false;
   }
 }
 

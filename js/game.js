@@ -4,6 +4,7 @@ import { Timer, EventBus } from "./utils.js";
 import Board from "./tetris/core.js";
 import Score from "./tetris/score.js";
 import Spawner from "./tetris/spawner.js";
+import Level from "./tetris/level.js";
 
 export default class GameManager {
   isRunning = false;
@@ -73,6 +74,7 @@ export default class GameManager {
         this.handle();
       }
     });
+    this.level = new Level(this.eventBus, this.timer);
   }
 
   handle() {
