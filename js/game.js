@@ -2,7 +2,7 @@ import { Tetromino } from "./tetris/model.js";
 import Block, { createStyle } from "./graphics/block.js";
 import { getRandomColor } from "./graphics/constants.js";
 import { Actions, InternalEvent, getRandomTetrominoType } from "./tetris/constants.js";
-import { Timer, EventBus } from "./utils.js";
+import { Timer, EventBus, rand } from "./utils.js";
 import Board from "./tetris/core.js";
 export default class GameManager {
   constructor(row, col, canvasBoard) {
@@ -72,7 +72,7 @@ export default class GameManager {
   }
 
   spawn() {
-    return new Tetromino(
+    let tetromino = new Tetromino(
       getRandomTetrominoType(),
       0,
       0,
@@ -82,6 +82,13 @@ export default class GameManager {
       this.blockWidth,
       this.blockHeight
     );
+
+    // 랜덤 횟수 만큼 회전한 테트로미노를 생성
+    const rotateCnt = rand(0, 4);
+    for (let i = 0; i < rotateCnt; i++) {
+      tetromino = tetromino.ofRotate();
+    }
+    return tetromino;
   }
 
   render() {
