@@ -2,9 +2,9 @@ import { Colors } from "../graphics/constants.js";
 
 export default class Board {
   constructor(row, col) {
-    this.row = row + 2;
-    this.col = col + 2;
-    this.board = new Array(row + 2).fill(0).map(() => new Array(col + 2).fill(0));
+    this.row = row;
+    this.col = col;
+    this.board = new Array(row).fill(0).map(() => new Array(col).fill(0));
     this.fillEdge();
   }
 
@@ -98,7 +98,6 @@ export default class Board {
         lines.push(y);
       }
     }
-    console.log(lines);
     return lines;
   }
 
@@ -141,6 +140,18 @@ export default class Board {
     }
 
     return false;
+  }
+
+  get occupiedBlocks() {
+    const blocks = [];
+    for (let y = 0; y < this.row; y++) {
+      for (let x = 0; x < this.col; x++) {
+        if (this.board[y][x] != 0) {
+          blocks.push([x, y, this.board[y][x].color]);
+        }
+      }
+    }
+    return blocks;
   }
 }
 
