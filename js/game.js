@@ -1,7 +1,7 @@
 import { Tetromino } from "./tetris/model.js";
 import Block, { createStyle } from "./graphics/block.js";
 import { getRandomColor } from "./graphics/constants.js";
-import { Actions, getRandomTetrominoType } from "./tetris/constants.js";
+import { Actions, InternalEvent, getRandomTetrominoType } from "./tetris/constants.js";
 import { Timer, EventBus } from "./utils.js";
 import Board from "./tetris/core.js";
 export default class GameManager {
@@ -23,6 +23,9 @@ export default class GameManager {
     this.current = this.spawn();
 
     this.eventBus = new EventBus();
+
+    this.score = new Score(this.eventBus);
+
     this.eventBus.on(Actions.Rotate, () => {
       if (this.board.isRotatable(this.current)) {
         this.current = this.current.ofRotate();
@@ -40,6 +43,7 @@ export default class GameManager {
     });
 
     this.timer = new Timer(100, () => {
+      this.eventBus.emit(InternalEvent.TimerTick);
       this.handle();
     });
   }
@@ -52,6 +56,7 @@ export default class GameManager {
 
       let clearLines = this.board.getClearableLines();
       while (clearLines.length > 0) {
+        this.eventBus.emit(InternalEvent.LineCleared, clearLines.length);
         this.board.spliceLines(clearLines);
         this.board.mergeLines(clearLines);
         clearLines = this.board.getClearableLines();
@@ -59,12 +64,13 @@ export default class GameManager {
 
       const spawningTetromino = this.spawn();
       if (this.board.isGameOver(spawningTetromino)) {
-        alert("gameover");
+        alert("gameover score:" + this.score.value);
       }
 
       this.current = spawningTetromino;
     }
   }
+
   spawn() {
     return new Tetromino(
       getRandomTetrominoType(),
@@ -103,5 +109,23 @@ export default class GameManager {
 
     this.timer.run();
     this.canvasBoard.render();
+  }
+}
+
+export class Score {
+  score = 0;
+  constructor(eventBus) {
+    eventBus.on(InternalEvent.TimerTick, () => {
+      this.score += 100;
+      console.log(this.score);
+    });
+    eventBus.on(InternalEvent.LineCleared, (numOfLines) => {
+      this.score += numOfLines * 1000;
+      console.log(this.score);
+    });
+  }
+
+  get value() {
+    return this.score;
   }
 }

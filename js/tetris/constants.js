@@ -51,10 +51,16 @@ export const Actions = {
   Rotate: {},
 };
 
+export const InternalEvent = {
+  TimerTick: "timertick",
+  LineCleared: "linecleared",
+};
+
 export const getRandomTetrominoType = () => {
   const arr = Object.keys(TetrominoTypes);
   return TetrominoTypes[arr[rand(0, arr.length)]];
 };
 
+Object.freeze(InternalEvent);
 Object.freeze(TetrominoTypes);
 Object.freeze(Actions);
