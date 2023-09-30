@@ -19,11 +19,12 @@ export default class Spawner {
   }
 
   _spawnInternal(manager) {
+    const center = (manager.col - 2) / 2 - 2;
     let tetromino = new Tetromino(
       getRandomTetrominoType(),
+      center,
       0,
-      0,
-      manager.offsetX,
+      manager.offsetX + center * manager.blockWidth,
       manager.offsetY,
       getRandomColor(),
       manager.blockWidth,
