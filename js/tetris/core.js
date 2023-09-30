@@ -2,9 +2,9 @@ import { Colors } from "../graphics/constants.js";
 
 export default class Board {
   constructor(row, col) {
-    this.row = row + 2;
-    this.col = col + 2;
-    this.board = new Array(row + 2).fill(0).map(() => new Array(col + 2).fill(0));
+    this.row = row;
+    this.col = col;
+    this.board = new Array(row).fill(0).map(() => new Array(col).fill(0));
     this.fillEdge();
   }
 
@@ -98,7 +98,6 @@ export default class Board {
         lines.push(y);
       }
     }
-    console.log(lines);
     return lines;
   }
 

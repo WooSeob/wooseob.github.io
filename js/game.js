@@ -6,13 +6,14 @@ import { Timer, EventBus, rand } from "./utils.js";
 import Board from "./tetris/core.js";
 export default class GameManager {
   next;
-  constructor(row, col, canvasBoard, nextCanvasBoard, onScoreChanged) {
+  isRunning = false;
+  constructor(row, col, canvasBoard, nextCanvasBoard, onScoreChange, onGameOver) {
     this.canvasBoard = canvasBoard;
     this.nextCanvasBoard = nextCanvasBoard;
     this.row = row + 2;
     this.col = col + 2;
 
-    this.board = new Board(row, col);
+    this.board = new Board(this.row, this.col);
     // this.blockWidth = Math.floor(canvasBoard.width / (col + 2));
     // this.blockHeight = Math.floor(canvasBoard.height / (row + 2));
     this.blockWidth = 30;
@@ -20,13 +21,9 @@ export default class GameManager {
 
     this.offsetX = this.blockWidth;
     this.offsetY = this.blockHeight;
-    console.log(this);
-
-    this.current = this.spawn();
+    // console.log(this);
 
     this.eventBus = new EventBus();
-
-    this.score = new Score(this.eventBus);
 
     this.eventBus.on(Actions.Rotate, () => {
       if (this.board.isRotatable(this.current)) {
@@ -55,12 +52,24 @@ export default class GameManager {
       }
     });
     this.eventBus.on(InternalEvent.ScoreChanged, (score) => {
-      onScoreChanged(score);
+      onScoreChange(score);
     });
+    this.eventBus.on(InternalEvent.GameOvered, (score) => {
+      onGameOver(score);
+    });
+  }
 
+  start() {
+    this.current = this.spawn();
+    this.board = new Board(this.row, this.col);
+    this.score = new Score(this.eventBus);
+
+    this.isRunning = true;
     this.timer = new Timer(500, () => {
-      this.eventBus.emit(InternalEvent.TimerTick);
-      this.handle();
+      if (this.isRunning) {
+        this.eventBus.emit(InternalEvent.TimerTick);
+        this.handle();
+      }
     });
   }
 
@@ -80,7 +89,9 @@ export default class GameManager {
 
       const spawningTetromino = this.spawn();
       if (this.board.isGameOver(spawningTetromino)) {
-        alert("gameover score:" + this.score.value);
+        this.isRunning = false;
+        this.eventBus.emit(InternalEvent.GameOvered, this.score.value);
+        return;
       }
 
       this.current = spawningTetromino;
@@ -97,19 +108,6 @@ export default class GameManager {
     this.next = this._spawnInternal();
     return this._spawnInternal();
   }
-
-  // set next(next) {
-  //   this.next = new Tetromino(
-  //     JSON.parse(JSON.stringify(next.arr)),
-  //     next.x,
-  //     next.y,
-  //     0,
-  //     0,
-  //     next.color,
-  //     next.bWidth,
-  //     next.bheight
-  //   );
-  // }
 
   _spawnInternal() {
     let tetromino = new Tetromino(
@@ -153,15 +151,15 @@ export default class GameManager {
     // this.current.clear(this.canvasBoard.ctx);
     for (let y = 0; y < this.row; y++) {
       for (let x = 0; x < this.col; x++) {
-        if (this.board.board[y][x] != 0) {
-          drawBlock(x, y, this.board.board[y][x].color);
+        if (this.board?.board[y][x] != 0) {
+          drawBlock(x, y, this.board?.board[y][x].color);
         }
       }
     }
     this.next?.draw(this.nextCanvasBoard.ctx);
-    this.current.draw(this.canvasBoard.ctx);
+    this.current?.draw(this.canvasBoard.ctx);
 
-    this.timer.run();
+    this.timer?.run();
     this.canvasBoard.render();
     this.nextCanvasBoard.render();
   }

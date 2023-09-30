@@ -20,13 +20,17 @@ function d(canvas) {
 d(canvas);
 d(canvasNext);
 
-const aa = new GameManager(
+const game = new GameManager(
   20,
   10,
   new CanvasBoard(canvas),
   new CanvasBoard(canvasNext),
   (score) => {
     document.getElementById("score").innerHTML = score;
+  },
+  (score) => {
+    document.getElementById("start").innerHTML = "재시작";
+    alert("game over! score: " + score);
   }
 );
 
@@ -35,32 +39,36 @@ function addEventListener() {
   document.addEventListener("keydown", handleKeyPress);
 }
 
+addEventListener();
+
 function handleKeyPress(event) {
-  console.log(event.keyCode);
   if (event.keyCode === 38) {
-    aa.eventBus.emit(Actions.Rotate);
+    game.eventBus.emit(Actions.Rotate);
   }
   if (event.keyCode === 37) {
     // left
-    aa.eventBus.emit(Actions.Left);
+    game.eventBus.emit(Actions.Left);
   }
   if (event.keyCode === 39) {
     // right
-    aa.eventBus.emit(Actions.Right);
+    game.eventBus.emit(Actions.Right);
   }
   if (event.keyCode === 40) {
     // down
-    aa.eventBus.emit(Actions.Down);
+    game.eventBus.emit(Actions.Down);
   }
   if (event.keyCode === 32) {
     // drop - space
-    aa.eventBus.emit(Actions.Drop);
+    game.eventBus.emit(Actions.Drop);
   }
 }
-addEventListener();
+
+document.getElementById("start").addEventListener("click", (e) => {
+  game.start();
+});
 
 function render() {
-  aa.render();
+  game.render();
   requestAnimationFrame(render);
 }
 
