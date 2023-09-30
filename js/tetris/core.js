@@ -126,6 +126,22 @@ export default class Board {
       this.board.splice(1, 0, newRow);
     });
   }
+
+  isGameOver(spawningTetromino) {
+    // 스폰할 수 없으면 끝난것?
+    for (let y = 0; y < spawningTetromino.arr.length; y++) {
+      for (let x = 0; x < spawningTetromino.arr[0].length; x++) {
+        if (
+          spawningTetromino.arr[y][x] &&
+          this.getBoardState(spawningTetromino.y + y, spawningTetromino.x + x)
+        ) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
 }
 
 // for (let y = 1; y < this.row - 1; y++) {

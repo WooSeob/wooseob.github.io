@@ -34,7 +34,12 @@ export default class GameManager {
           clearLines = this.board.getClearableLines();
         }
 
-        this.current = this.spawn();
+        const spawningTetromino = this.spawn();
+        if (this.board.isGameOver(spawningTetromino)) {
+          alert("gameover");
+        }
+
+        this.current = spawningTetromino;
       }
     };
 
