@@ -1,4 +1,5 @@
-import GameManager, { CanvasBoard } from "./game.js";
+import GameManager from "./game.js";
+import CanvasBoard from "./graphics/canvas.js";
 import { Actions } from "./tetris/constants.js";
 
 const canvas = document.getElementById("main-container");
