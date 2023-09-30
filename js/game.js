@@ -1,11 +1,11 @@
-import { Tetromino } from "./tetris/model.js";
 import Block, { createStyle } from "./graphics/block.js";
-import { getRandomColor } from "./graphics/constants.js";
-import { Actions, InternalEvent, getRandomTetrominoType } from "./tetris/constants.js";
-import { Timer, EventBus, rand } from "./utils.js";
+import { Actions, InternalEvent } from "./tetris/constants.js";
+import { Timer, EventBus } from "./utils.js";
 import Board from "./tetris/core.js";
+import Score from "./tetris/score.js";
+import Spawner from "./tetris/spawner.js";
+
 export default class GameManager {
-  next;
   isRunning = false;
   constructor(row, col, canvasBoard, nextCanvasBoard, onScoreChange, onGameOver) {
     this.canvasBoard = canvasBoard;
@@ -60,9 +60,11 @@ export default class GameManager {
   }
 
   start() {
-    this.current = this.spawn();
+    this.spawner = new Spawner();
     this.board = new Board(this.row, this.col);
     this.score = new Score(this.eventBus);
+
+    this.current = this.spawner.spawn(this);
 
     this.isRunning = true;
     this.timer = new Timer(500, () => {
@@ -87,7 +89,7 @@ export default class GameManager {
         clearLines = this.board.getClearableLines();
       }
 
-      const spawningTetromino = this.spawn();
+      const spawningTetromino = this.spawner.spawn(this);
       if (this.board.isGameOver(spawningTetromino)) {
         this.isRunning = false;
         this.eventBus.emit(InternalEvent.GameOvered, this.score.value);
@@ -96,37 +98,6 @@ export default class GameManager {
 
       this.current = spawningTetromino;
     }
-  }
-
-  spawn() {
-    if (this.next) {
-      const t = this.next;
-      this.next = this._spawnInternal();
-      return t;
-    }
-
-    this.next = this._spawnInternal();
-    return this._spawnInternal();
-  }
-
-  _spawnInternal() {
-    let tetromino = new Tetromino(
-      getRandomTetrominoType(),
-      0,
-      0,
-      this.offsetX,
-      this.offsetY,
-      getRandomColor(),
-      this.blockWidth,
-      this.blockHeight
-    );
-
-    // 랜덤 횟수 만큼 회전한 테트로미노를 생성
-    const rotateCnt = rand(0, 4);
-    for (let i = 0; i < rotateCnt; i++) {
-      tetromino = tetromino.ofRotate();
-    }
-    return tetromino;
   }
 
   render() {
@@ -152,29 +123,11 @@ export default class GameManager {
     // this.current.clear(this.canvasBoard.ctx);
     this.board?.occupiedBlocks.forEach(drawBlock);
 
-    this.next?.draw(this.nextCanvasBoard.ctx);
+    this.spawner?.next?.draw(this.nextCanvasBoard.ctx);
     this.current?.draw(this.canvasBoard.ctx);
 
     this.timer?.run();
     this.canvasBoard.render();
     this.nextCanvasBoard.render();
-  }
-}
-
-export class Score {
-  score = 0;
-  constructor(eventBus) {
-    eventBus.on(InternalEvent.TimerTick, () => {
-      this.score += 100;
-      eventBus.emit(InternalEvent.ScoreChanged, this.score);
-    });
-    eventBus.on(InternalEvent.LineCleared, (numOfLines) => {
-      this.score += numOfLines * 1000;
-      eventBus.emit(InternalEvent.ScoreChanged, this.score);
-    });
-  }
-
-  get value() {
-    return this.score;
   }
 }

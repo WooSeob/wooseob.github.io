@@ -16,7 +16,6 @@ export class Timer {
   }
   run() {
     if (Date.now() - this.start > this.tick) {
-      console.log("invoke");
       this.callback();
       this.start = Date.now();
     }
