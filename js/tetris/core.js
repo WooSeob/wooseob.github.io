@@ -141,6 +141,18 @@ export default class Board {
 
     return false;
   }
+
+  get occupiedBlocks() {
+    const blocks = [];
+    for (let y = 0; y < this.row; y++) {
+      for (let x = 0; x < this.col; x++) {
+        if (this.board[y][x] != 0) {
+          blocks.push([x, y, this.board[y][x].color]);
+        }
+      }
+    }
+    return blocks;
+  }
 }
 
 // for (let y = 1; y < this.row - 1; y++) {

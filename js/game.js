@@ -138,7 +138,8 @@ export default class GameManager {
     );
     this.canvasBoard.ctx.clearRect(0, 0, this.canvasBoard.width, this.canvasBoard.height);
 
-    const drawBlock = (x, y, color) => {
+    const drawBlock = (block) => {
+      const [x, y, color] = block;
       new Block(
         x * this.blockWidth,
         y * this.blockHeight,
@@ -149,13 +150,8 @@ export default class GameManager {
     };
 
     // this.current.clear(this.canvasBoard.ctx);
-    for (let y = 0; y < this.row; y++) {
-      for (let x = 0; x < this.col; x++) {
-        if (this.board?.board[y][x] != 0) {
-          drawBlock(x, y, this.board?.board[y][x].color);
-        }
-      }
-    }
+    this.board?.occupiedBlocks.forEach(drawBlock);
+
     this.next?.draw(this.nextCanvasBoard.ctx);
     this.current?.draw(this.canvasBoard.ctx);
 
