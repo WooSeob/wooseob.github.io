@@ -6,7 +6,7 @@ import { Timer, EventBus, rand } from "./utils.js";
 import Board from "./tetris/core.js";
 export default class GameManager {
   next;
-  constructor(row, col, canvasBoard, nextCanvasBoard) {
+  constructor(row, col, canvasBoard, nextCanvasBoard, onScoreChanged) {
     this.canvasBoard = canvasBoard;
     this.nextCanvasBoard = nextCanvasBoard;
     this.row = row + 2;
@@ -15,8 +15,8 @@ export default class GameManager {
     this.board = new Board(row, col);
     // this.blockWidth = Math.floor(canvasBoard.width / (col + 2));
     // this.blockHeight = Math.floor(canvasBoard.height / (row + 2));
-    this.blockWidth = 35;
-    this.blockHeight = 35;
+    this.blockWidth = 30;
+    this.blockHeight = 30;
 
     this.offsetX = this.blockWidth;
     this.offsetY = this.blockHeight;
@@ -53,6 +53,9 @@ export default class GameManager {
       while (this.board.isMoveable(this.current, Actions.Down)) {
         this.current = this.current.ofMove(Actions.Down.delta.x, Actions.Down.delta.y);
       }
+    });
+    this.eventBus.on(InternalEvent.ScoreChanged, (score) => {
+      onScoreChanged(score);
     });
 
     this.timer = new Timer(500, () => {
@@ -95,18 +98,18 @@ export default class GameManager {
     return this._spawnInternal();
   }
 
-  set next(next) {
-    this.next = new Tetromino(
-      JSON.parse(JSON.stringify(next.arr)),
-      next.x,
-      next.y,
-      0,
-      0,
-      next.color,
-      next.bWidth,
-      next.bheight
-    );
-  }
+  // set next(next) {
+  //   this.next = new Tetromino(
+  //     JSON.parse(JSON.stringify(next.arr)),
+  //     next.x,
+  //     next.y,
+  //     0,
+  //     0,
+  //     next.color,
+  //     next.bWidth,
+  //     next.bheight
+  //   );
+  // }
 
   _spawnInternal() {
     let tetromino = new Tetromino(
@@ -169,11 +172,11 @@ export class Score {
   constructor(eventBus) {
     eventBus.on(InternalEvent.TimerTick, () => {
       this.score += 100;
-      console.log(this.score);
+      eventBus.emit(InternalEvent.ScoreChanged, this.score);
     });
     eventBus.on(InternalEvent.LineCleared, (numOfLines) => {
       this.score += numOfLines * 1000;
-      console.log(this.score);
+      eventBus.emit(InternalEvent.ScoreChanged, this.score);
     });
   }
 

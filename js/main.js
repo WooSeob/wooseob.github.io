@@ -20,7 +20,15 @@ function d(canvas) {
 d(canvas);
 d(canvasNext);
 
-const aa = new GameManager(20, 10, new CanvasBoard(canvas), new CanvasBoard(canvasNext));
+const aa = new GameManager(
+  20,
+  10,
+  new CanvasBoard(canvas),
+  new CanvasBoard(canvasNext),
+  (score) => {
+    document.getElementById("score").innerHTML = score;
+  }
+);
 
 function addEventListener() {
   document.removeEventListener("keydown", handleKeyPress);

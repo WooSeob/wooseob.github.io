@@ -55,6 +55,7 @@ export const Actions = {
 export const InternalEvent = {
   TimerTick: "timertick",
   LineCleared: "linecleared",
+  ScoreChanged: "scorechanged",
 };
 
 export const getRandomTetrominoType = () => {
