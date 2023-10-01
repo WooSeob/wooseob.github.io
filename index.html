@@ -5,12 +5,20 @@
   </head>
   <body>
     <div class="center">
-      <a>현재 점수:</a>
-      <a id="score"></a>
-      <p>다음 블록들....</p>
-      <button id="start">게임 시작</button>
-      <canvas id="next-container"></canvas>
-      <canvas id="main-container"></canvas>
+      <div class="container">
+        <div class="box box1">
+          <h2 id="score">현재 점수: 0점</h2>
+        </div>
+        <div class="box box2">
+          <canvas id="main-container"></canvas>
+        </div>
+
+        <div class="box box3">
+          <p>다음 블록들....</p>
+          <button id="start">게임 시작</button>
+          <canvas id="next-container"></canvas>
+        </div>
+      </div>
     </div>
 
     <script src="./js/main.js" type="module"></script>

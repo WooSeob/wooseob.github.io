@@ -15,14 +15,14 @@ export default class GameManager {
     this.col = col + 2;
 
     this.board = new Board(this.row, this.col);
-    // this.blockWidth = Math.floor(canvasBoard.width / (col + 2));
-    // this.blockHeight = Math.floor(canvasBoard.height / (row + 2));
-    this.blockWidth = 30;
-    this.blockHeight = 30;
+    this.blockWidth = Math.floor(canvasBoard.width / (col + 2));
+    this.blockHeight = Math.floor(canvasBoard.height / (row + 2));
+    // this.blockWidth = 30;
+    // this.blockHeight = 30;
 
     this.offsetX = this.blockWidth;
     this.offsetY = this.blockHeight;
-    // console.log(this);
+    console.log(this);
 
     this.eventBus = new EventBus();
 
@@ -61,7 +61,7 @@ export default class GameManager {
   }
 
   start() {
-    this.spawner = new Spawner();
+    this.spawner = new Spawner(this);
     this.board = new Board(this.row, this.col);
     this.score = new Score(this.eventBus);
 
@@ -125,7 +125,7 @@ export default class GameManager {
     // this.current.clear(this.canvasBoard.ctx);
     this.board?.occupiedBlocks.forEach(drawBlock);
 
-    this.spawner?.next?.draw(this.nextCanvasBoard.ctx);
+    this.spawner?._next?.draw(this.nextCanvasBoard.ctx);
     this.current?.draw(this.canvasBoard.ctx);
 
     this.timer?.run();
