@@ -8,8 +8,6 @@ export default class Block {
   }
 
   draw(ctx) {
-    ctx.fillStyle = this.style?.getColor(0);
-    ctx.fillRect(this.x, this.y, this.width, this.height);
     this.style?.doStyle(ctx, this);
   }
 
@@ -30,6 +28,9 @@ export class ClassicStyle {
   }
 
   doStyle(ctx, block) {
+    ctx.fillStyle = this.getColor(0);
+    ctx.fillRect(block.x, block.y, block.width, block.height);
+
     const lwidth = block.width * this.lineWidthRatio;
     ctx.beginPath();
     ctx.lineWidth = lwidth;
@@ -71,4 +72,24 @@ export class ClassicStyle {
   }
 }
 
+export class GuideStyle {
+  constructor(baseColor, lineWidthRatio) {
+    this.baseColor = baseColor;
+    this.lineWidthRatio = lineWidthRatio;
+  }
+
+  doStyle(ctx, block) {
+    ctx.strokeStyle = this.getColor(0);
+    ctx.setLineDash([5, 15]);
+    ctx.strokeRect(block.x, block.y, block.width, block.height);
+  }
+
+  getColor(weight) {
+    return `rgb(${this.baseColor.R + weight}, ${this.baseColor.G + weight}, ${
+      this.baseColor.B + weight
+    })`;
+  }
+}
+
 export const createStyle = (color) => new ClassicStyle(color, 60, 0.1);
+export const createEmptyDashedStyle = (color) => new GuideStyle(color, 0.1);
