@@ -4,18 +4,17 @@ import { Tetromino } from "./model.js";
 import { rand } from "../utils.js";
 
 export default class Spawner {
-  next;
-  constructor() {}
+  _next = undefined;
+  originState = {};
+
+  constructor(manager) {
+    this.next = this._spawnInternal(manager);
+  }
 
   spawn(manager) {
-    if (this.next) {
-      const t = this.next;
-      this.next = this._spawnInternal(manager);
-      return t;
-    }
-
+    const t = this.next;
     this.next = this._spawnInternal(manager);
-    return this._spawnInternal(manager);
+    return t;
   }
 
   _spawnInternal(manager) {
@@ -37,5 +36,44 @@ export default class Spawner {
       tetromino = tetromino.ofRotate();
     }
     return tetromino;
+  }
+
+  get next() {
+    // 메인 캔버스에 스포닝 하기 위해 오프셋 정보 restore
+    if (this._next === undefined) {
+      return undefined;
+    }
+
+    return new Tetromino(
+      this._next.arr,
+      this.originState.x,
+      this.originState.y,
+      this.originState.offsetX,
+      this.originState.offsetY,
+      this._next.color,
+      this._next.bWidth,
+      this._next.bheight
+    );
+  }
+
+  set next(value) {
+    // 다음 테트로미노 영역에 표시하기 위해 오프셋 정보를 제거
+    this.originState = {
+      offsetX: value.offsetX,
+      offsetY: value.offsetY,
+      x: value.x,
+      y: value.y,
+    };
+
+    this._next = new Tetromino(
+      value.arr,
+      0,
+      0,
+      0,
+      0,
+      value.color,
+      value.bWidth,
+      value.bheight
+    );
   }
 }
