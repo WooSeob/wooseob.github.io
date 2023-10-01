@@ -76,7 +76,7 @@ export default class Board {
           continue;
         }
         this.board[tetromino.y + y + 1][tetromino.x + x + 1] = {
-          color: tetromino.color,
+          color: tetromino.style.baseColor,
         };
       }
     }

@@ -80,8 +80,9 @@ export class GuideStyle {
 
   doStyle(ctx, block) {
     ctx.strokeStyle = this.getColor(0);
-    ctx.setLineDash([5, 15]);
+    ctx.setLineDash([5]);
     ctx.strokeRect(block.x, block.y, block.width, block.height);
+    ctx.setLineDash([]);
   }
 
   getColor(weight) {

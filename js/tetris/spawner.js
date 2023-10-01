@@ -2,6 +2,8 @@ import { getRandomTetrominoType } from "./constants.js";
 import { getRandomColor } from "../graphics/constants.js";
 import Tetromino, { GuidedTetromino } from "./model.js";
 import { rand } from "../utils.js";
+import { Actions } from "./constants.js";
+import { createEmptyDashedStyle, createStyle } from "../graphics/block.js";
 
 export default class Spawner {
   _next = undefined;
@@ -12,14 +14,32 @@ export default class Spawner {
   }
 
   spawn(manager) {
-    const t = this.next;
+    const real = this.next;
     this.next = this._spawnInternal(manager);
-    return t;
+    return new GuidedTetromino(real, this._getGuide(manager, real), manager.board);
+  }
+
+  _getGuide(manager, real) {
+    let guide = new Tetromino(
+      real.arr,
+      real.x,
+      real.y,
+      createEmptyDashedStyle(real.style.baseColor)
+    );
+    while (manager.board.isMoveable(guide, Actions.Down)) {
+      guide = guide.ofDown(1);
+    }
+    return guide;
   }
 
   _spawnInternal(manager) {
     const center = (manager.col - 2) / 2 - 2;
-    let tetromino = new GuidedTetromino(getRandomTetrominoType(), center, 0, getRandomColor());
+    let tetromino = new Tetromino(
+      getRandomTetrominoType(),
+      center,
+      0,
+      createStyle(getRandomColor())
+    );
 
     // 랜덤 횟수 만큼 회전한 테트로미노를 생성
     const rotateCnt = rand(0, 4);
@@ -35,11 +55,11 @@ export default class Spawner {
       return undefined;
     }
 
-    return new GuidedTetromino(
+    return new Tetromino(
       this._next.arr,
       this.originState.x,
       this.originState.y,
-      this._next.color
+      this._next.style
     );
   }
 
@@ -52,6 +72,6 @@ export default class Spawner {
       y: value.y,
     };
 
-    this._next = new GuidedTetromino(value.arr, 0, 0, value.color);
+    this._next = new Tetromino(value.arr, 0, 0, value.style);
   }
 }

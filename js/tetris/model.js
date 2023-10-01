@@ -1,12 +1,13 @@
-import Block, { createStyle } from "../graphics/block.js";
+import Block, { createEmptyDashedStyle, createStyle } from "../graphics/block.js";
+import { Actions } from "./constants.js";
 
 export default class Tetromino {
   // blocks = [];
-  constructor(arr, x, y, color) {
+  constructor(arr, x, y, style) {
     this.arr = arr;
     this.x = x;
     this.y = y;
-    this.color = color;
+    this.style = style;
   }
 
   draw(ctx, offset, block) {
@@ -20,7 +21,7 @@ export default class Tetromino {
           offset.y + (this.y + y) * block.height,
           block.width,
           block.height,
-          createStyle(this.color)
+          this.style
         ).draw(ctx);
         // this.blocks.push(block);
       }
@@ -45,11 +46,11 @@ export default class Tetromino {
 
     newArr.forEach((row) => row.reverse());
 
-    return new Tetromino(newArr, this.x, this.y, this.color);
+    return new Tetromino(newArr, this.x, this.y, this.style);
   }
 
   ofMove(dx, dy) {
-    return new Tetromino(this.arr, this.x + dx, this.y + dy, this.color);
+    return new Tetromino(this.arr, this.x + dx, this.y + dy, this.style);
   }
 
   ofDown(dy) {
@@ -57,4 +58,64 @@ export default class Tetromino {
   }
 }
 
-export class GuidedTetromino extends Tetromino {}
+export class GuidedTetromino {
+  constructor(real, guide, board) {
+    this.real = real;
+    this.guide = guide;
+    this.board = board;
+  }
+
+  get x() {
+    return this.real.x;
+  }
+
+  get y() {
+    return this.real.y;
+  }
+
+  get arr() {
+    return this.real.arr;
+  }
+
+  get style() {
+    return this.real.style;
+  }
+
+  draw(ctx, offset, block) {
+    this.guide.draw(ctx, offset, block);
+    this.real.draw(ctx, offset, block);
+  }
+
+  ofRotate() {
+    return new GuidedTetromino(
+      this.real.ofRotate(),
+      this._getGuide(this.real.ofRotate()),
+      this.board
+    );
+  }
+
+  ofMove(dx, dy) {
+    return new GuidedTetromino(
+      this.real.ofMove(dx, dy),
+      this._getGuide(this.real.ofMove(dx, 0)),
+      this.board
+    );
+  }
+
+  ofDown(dy) {
+    return this.ofMove(0, dy);
+  }
+
+  _getGuide(real) {
+    let guide = new Tetromino(
+      real.arr,
+      real.x,
+      real.y,
+      createEmptyDashedStyle(real.style.baseColor)
+    );
+    while (this.board.isMoveable(guide, Actions.Down)) {
+      guide = guide.ofDown(1);
+    }
+    return guide;
+  }
+}
