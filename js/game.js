@@ -125,8 +125,16 @@ export default class GameManager {
     // this.current.clear(this.canvasBoard.ctx);
     this.board?.occupiedBlocks.forEach(drawBlock);
 
-    this.spawner?._next?.draw(this.nextCanvasBoard.ctx);
-    this.current?.draw(this.canvasBoard.ctx);
+    this.spawner?._next?.draw(
+      this.nextCanvasBoard.ctx,
+      { x: 0, y: 0 },
+      { width: this.blockWidth, height: this.blockHeight }
+    );
+    this.current?.draw(
+      this.canvasBoard.ctx,
+      { x: this.offsetX, y: this.offsetY },
+      { width: this.blockWidth, height: this.blockHeight }
+    );
 
     this.timer?.run();
     this.canvasBoard.render();

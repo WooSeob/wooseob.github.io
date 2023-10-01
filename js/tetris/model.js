@@ -1,55 +1,38 @@
 import Block, { createStyle } from "../graphics/block.js";
 
-export class Tetromino {
+export default class Tetromino {
   // blocks = [];
-  constructor(arr, x, y, offsetX, offsetY, color, bWidth, bheight) {
+  constructor(arr, x, y, color) {
     this.arr = arr;
     this.x = x;
     this.y = y;
-    this.offsetX = offsetX;
-    this.offsetY = offsetY;
-
-    this.bWidth = bWidth;
-    this.bheight = bheight;
     this.color = color;
   }
 
-  draw(ctx) {
+  draw(ctx, offset, block) {
     for (let y = 0; y < this.arr.length; y++) {
       for (let x = 0; x < this.arr[0].length; x++) {
         if (this.arr[y][x] != 1) {
           continue;
         }
-        const block = new Block(
-          this.offsetX + x * this.bWidth,
-          this.offsetY + y * this.bheight,
-          this.bWidth,
-          this.bheight,
+        new Block(
+          offset.x + (this.x + x) * block.width,
+          offset.y + (this.y + y) * block.height,
+          block.width,
+          block.height,
           createStyle(this.color)
-        );
-        block.draw(ctx);
+        ).draw(ctx);
         // this.blocks.push(block);
       }
     }
 
     ctx.strokeRect(
-      this.offsetX,
-      this.offsetY,
-      this.bWidth * this.arr.length,
-      this.bheight * this.arr[0].length
+      offset.x + this.x * block.width,
+      offset.y + this.y * block.height,
+      block.width * this.arr.length,
+      block.height * this.arr[0].length
     );
   }
-
-  // clear(ctx) {
-  //   this.blocks.forEach((b) => b.clear(ctx));
-  //   this.blocks = [];
-  //   ctx.clearRect(
-  //     this.offsetX,
-  //     this.offsetY,
-  //     this.bWidth * this.arr.length,
-  //     this.bheight * this.arr[0].length
-  //   );
-  // }
 
   ofRotate() {
     const newArr = JSON.parse(JSON.stringify(this.arr));
@@ -62,32 +45,16 @@ export class Tetromino {
 
     newArr.forEach((row) => row.reverse());
 
-    return new Tetromino(
-      newArr,
-      this.x,
-      this.y,
-      this.offsetX,
-      this.offsetY,
-      this.color,
-      this.bWidth,
-      this.bheight
-    );
+    return new Tetromino(newArr, this.x, this.y, this.color);
   }
 
   ofMove(dx, dy) {
-    return new Tetromino(
-      this.arr,
-      this.x + dx,
-      this.y + dy,
-      this.offsetX + dx * this.bWidth,
-      this.offsetY + dy * this.bheight,
-      this.color,
-      this.bWidth,
-      this.bheight
-    );
+    return new Tetromino(this.arr, this.x + dx, this.y + dy, this.color);
   }
 
   ofDown(dy) {
     return this.ofMove(0, dy);
   }
 }
+
+export class GuidedTetromino extends Tetromino {}
