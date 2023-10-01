@@ -67,6 +67,16 @@ document.getElementById("start").addEventListener("click", (e) => {
   game.start();
 });
 
+document.getElementById("left").addEventListener("click", (e) => {
+  game.eventBus.emit(Actions.Left);
+});
+document.getElementById("right").addEventListener("click", (e) => {
+  game.eventBus.emit(Actions.Right);
+});
+document.getElementById("rotate").addEventListener("click", (e) => {
+  game.eventBus.emit(Actions.Rotate);
+});
+
 function render() {
   game.render();
   requestAnimationFrame(render);
