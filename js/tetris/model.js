@@ -89,7 +89,7 @@ export class GuidedTetromino {
   ofRotate() {
     return new GuidedTetromino(
       this.real.ofRotate(),
-      this._getGuide(this.real.ofRotate()),
+      GuidedTetromino.createGuide(this.board, this.real.ofRotate()),
       this.board
     );
   }
@@ -97,7 +97,7 @@ export class GuidedTetromino {
   ofMove(dx, dy) {
     return new GuidedTetromino(
       this.real.ofMove(dx, dy),
-      this._getGuide(this.real.ofMove(dx, 0)),
+      GuidedTetromino.createGuide(this.board, this.real.ofMove(dx, 0)),
       this.board
     );
   }
@@ -106,14 +106,14 @@ export class GuidedTetromino {
     return this.ofMove(0, dy);
   }
 
-  _getGuide(real) {
+  static createGuide(board, real) {
     let guide = new Tetromino(
       real.arr,
       real.x,
       real.y,
       createEmptyDashedStyle(real.style.baseColor)
     );
-    while (this.board.isMoveable(guide, Actions.Down)) {
+    while (board.isMoveable(guide, Actions.Down)) {
       guide = guide.ofDown(1);
     }
     return guide;

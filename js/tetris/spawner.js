@@ -2,8 +2,7 @@ import { getRandomTetrominoType } from "./constants.js";
 import { getRandomColor } from "../graphics/constants.js";
 import Tetromino, { GuidedTetromino } from "./model.js";
 import { rand } from "../utils.js";
-import { Actions } from "./constants.js";
-import { createEmptyDashedStyle, createStyle } from "../graphics/block.js";
+import { createStyle } from "../graphics/block.js";
 
 export default class Spawner {
   _next = undefined;
@@ -16,20 +15,11 @@ export default class Spawner {
   spawn(manager) {
     const real = this.next;
     this.next = this._spawnInternal(manager);
-    return new GuidedTetromino(real, this._getGuide(manager, real), manager.board);
-  }
-
-  _getGuide(manager, real) {
-    let guide = new Tetromino(
-      real.arr,
-      real.x,
-      real.y,
-      createEmptyDashedStyle(real.style.baseColor)
+    return new GuidedTetromino(
+      real,
+      GuidedTetromino.createGuide(manager.board, real),
+      manager.board
     );
-    while (manager.board.isMoveable(guide, Actions.Down)) {
-      guide = guide.ofDown(1);
-    }
-    return guide;
   }
 
   _spawnInternal(manager) {
