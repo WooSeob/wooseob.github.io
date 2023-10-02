@@ -11,6 +11,10 @@ export default class Score {
       this.score += numOfLines * 1000;
       eventBus.emit(InternalEvent.ScoreChanged, this.score);
     });
+    eventBus.on(InternalEvent.DownFast, (amount) => {
+      this.score += amount * 10;
+      eventBus.emit(InternalEvent.ScoreChanged, this.score);
+    });
   }
 
   get value() {

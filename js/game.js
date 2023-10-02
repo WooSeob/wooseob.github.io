@@ -51,12 +51,18 @@ export default class GameManager {
     this.eventBus.on(Actions.Down, () => {
       if (this.board.isMoveable(this.current, Actions.Down)) {
         this.current = this.current.ofMove(Actions.Down.delta.x, Actions.Down.delta.y);
+        this.eventBus.emit(InternalEvent.DownFast, 1);
       }
     });
 
     this.eventBus.on(Actions.Drop, () => {
+      let amount = 0;
       while (this.board.isMoveable(this.current, Actions.Down)) {
         this.current = this.current.ofMove(Actions.Down.delta.x, Actions.Down.delta.y);
+        amount += 1;
+      }
+      if (amount > 0) {
+        this.eventBus.emit(InternalEvent.DownFast, amount);
       }
     });
     this.eventBus.on(InternalEvent.ScoreChanged, (score) => {
@@ -75,7 +81,7 @@ export default class GameManager {
     this.current = this.spawner.spawn(this);
 
     this.isRunning = true;
-    this.timer = new Timer(500, () => {
+    this.timer = new Timer(400, () => {
       if (this.isRunning) {
         this.eventBus.emit(InternalEvent.TimerTick);
         this.handle();

@@ -5,7 +5,7 @@ export default class Level {
     this.timer = timer;
     this.level = 1;
     eventBus.on(InternalEvent.LineCleared, () => {
-      if (timer.decrease(50)) {
+      if (timer.decrease(25)) {
         this.level += 1;
         console.log(this.level);
       }

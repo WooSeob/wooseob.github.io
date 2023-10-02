@@ -57,6 +57,7 @@ export const InternalEvent = {
   LineCleared: "linecleared",
   ScoreChanged: "scorechanged",
   GameOvered: "gameovered",
+  DownFast: "downfast",
 };
 
 export const getRandomTetrominoType = () => {
