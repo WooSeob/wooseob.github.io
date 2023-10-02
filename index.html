@@ -15,13 +15,28 @@
         </div>
 
         <div class="box box3">
-          <p>다음 블록들....</p>
           <button id="start">게임 시작</button>
+
+          <p>다음 블록들....</p>
           <canvas id="next-container"></canvas>
 
           <button class="user-input" id="left"><</button><br /><br />
           <button class="user-input" id="right">></button><br /><br />
           <button class="user-input" id="rotate">회전</button>
+
+          <fieldset>
+            <legend>게임 설정</legend>
+
+            <div>
+              <input type="checkbox" id="opt-showGuide" name="opt-showGuide" checked />
+              <label for="showGuide">블록 가이드</label>
+            </div>
+
+            <div>
+              <input type="checkbox" id="opt-dev-showBound" name="opt-dev-showBound" />
+              <label for="opt-dev-showBound">(개발자)테두리 노출</label>
+            </div>
+          </fieldset>
         </div>
       </div>
     </div>
