@@ -65,6 +65,7 @@ function handleKeyPress(event) {
 
 document.getElementById("start").addEventListener("click", (e) => {
   game.start();
+  document.getElementById("start").blur();
 });
 
 document.getElementById("left").addEventListener("click", (e) => {
