@@ -12,14 +12,23 @@ export default class Spawner {
     this.next = this._spawnInternal(manager);
   }
 
+  static TetrominoType = {
+    Default: (manager, tetromino) => tetromino,
+    Guided: (manager, tetromino) => {
+      return new GuidedTetromino(
+        tetromino,
+        GuidedTetromino.createGuide(manager.board, tetromino),
+        manager.board
+      );
+    },
+  };
+
   spawn(manager) {
     const real = this.next;
     this.next = this._spawnInternal(manager);
-    return new GuidedTetromino(
-      real,
-      GuidedTetromino.createGuide(manager.board, real),
-      manager.board
-    );
+
+    const tetrominoWrapper = manager.config.spawningType ?? Spawner.TetrominoType.Default;
+    return tetrominoWrapper(manager, real);
   }
 
   _spawnInternal(manager) {
@@ -28,7 +37,8 @@ export default class Spawner {
       getRandomTetrominoType(),
       center,
       0,
-      createStyle(getRandomColor())
+      createStyle(getRandomColor()),
+      manager.config.dev.showBound
     );
 
     // 랜덤 횟수 만큼 회전한 테트로미노를 생성
@@ -49,19 +59,18 @@ export default class Spawner {
       this._next.arr,
       this.originState.x,
       this.originState.y,
-      this._next.style
+      this._next.style,
+      this._next.showBound
     );
   }
 
   set next(value) {
     // 다음 테트로미노 영역에 표시하기 위해 오프셋 정보를 제거
     this.originState = {
-      offsetX: value.offsetX,
-      offsetY: value.offsetY,
       x: value.x,
       y: value.y,
     };
 
-    this._next = new Tetromino(value.arr, 0, 0, value.style);
+    this._next = new Tetromino(value.arr, 0, 0, value.style, value.showBound);
   }
 }

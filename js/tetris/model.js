@@ -3,11 +3,12 @@ import { Actions } from "./constants.js";
 
 export default class Tetromino {
   // blocks = [];
-  constructor(arr, x, y, style) {
+  constructor(arr, x, y, style, showBound = false) {
     this.arr = arr;
     this.x = x;
     this.y = y;
     this.style = style;
+    this.showBound = showBound;
   }
 
   draw(ctx, offset, block) {
@@ -27,12 +28,14 @@ export default class Tetromino {
       }
     }
 
-    ctx.strokeRect(
-      offset.x + this.x * block.width,
-      offset.y + this.y * block.height,
-      block.width * this.arr.length,
-      block.height * this.arr[0].length
-    );
+    if (this.showBound) {
+      ctx.strokeRect(
+        offset.x + this.x * block.width,
+        offset.y + this.y * block.height,
+        block.width * this.arr.length,
+        block.height * this.arr[0].length
+      );
+    }
   }
 
   ofRotate() {
@@ -46,11 +49,11 @@ export default class Tetromino {
 
     newArr.forEach((row) => row.reverse());
 
-    return new Tetromino(newArr, this.x, this.y, this.style);
+    return new Tetromino(newArr, this.x, this.y, this.style, this.showBound);
   }
 
   ofMove(dx, dy) {
-    return new Tetromino(this.arr, this.x + dx, this.y + dy, this.style);
+    return new Tetromino(this.arr, this.x + dx, this.y + dy, this.style, this.showBound);
   }
 
   ofDown(dy) {
@@ -111,7 +114,8 @@ export class GuidedTetromino {
       real.arr,
       real.x,
       real.y,
-      createEmptyDashedStyle(real.style.baseColor)
+      createEmptyDashedStyle(real.style.baseColor),
+      real.showBound
     );
     while (board.isMoveable(guide, Actions.Down)) {
       guide = guide.ofDown(1);

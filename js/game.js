@@ -8,6 +8,13 @@ import Level from "./tetris/level.js";
 
 export default class GameManager {
   isRunning = false;
+  config = {
+    spawningType: Spawner.TetrominoType.Guided,
+    dev: {
+      showBound: false,
+    },
+  };
+
   constructor(row, col, canvasBoard, nextCanvasBoard, onScoreChange, onGameOver) {
     this.canvasBoard = canvasBoard;
     this.nextCanvasBoard = nextCanvasBoard;
