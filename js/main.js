@@ -41,25 +41,26 @@ function addEventListener() {
 
 addEventListener();
 
+const KeyCode = {
+  UP: 38,
+  LEFT: 37,
+  RIGHT: 39,
+  DOWN: 40,
+  SPACE: 32,
+};
+
+const UserInputActionsMapping = new Map([
+  [KeyCode.UP, Actions.Rotate],
+  [KeyCode.LEFT, Actions.Left],
+  [KeyCode.RIGHT, Actions.Right],
+  [KeyCode.DOWN, Actions.Down],
+  [KeyCode.SPACE, Actions.Drop],
+]);
+
 function handleKeyPress(event) {
-  if (event.keyCode === 38) {
-    game.eventBus.emit(Actions.Rotate);
-  }
-  if (event.keyCode === 37) {
-    // left
-    game.eventBus.emit(Actions.Left);
-  }
-  if (event.keyCode === 39) {
-    // right
-    game.eventBus.emit(Actions.Right);
-  }
-  if (event.keyCode === 40) {
-    // down
-    game.eventBus.emit(Actions.Down);
-  }
-  if (event.keyCode === 32) {
-    // drop - space
-    game.eventBus.emit(Actions.Drop);
+  const action = UserInputActionsMapping.get(event.keyCode);
+  if (action) {
+    game.eventBus.emit(action);
   }
 }
 
