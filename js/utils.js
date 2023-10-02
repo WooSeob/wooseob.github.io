@@ -15,10 +15,17 @@ export class EventBus {
 }
 
 export class Timer {
+  blockElapsed = 0;
   constructor(tick, callback) {
     this.tick = tick;
-    this.start = Date.now();
+    const now = Date.now();
+    this.start = now;
+    this.startTime = now;
     this.callback = callback;
+
+    wrapAlert((elapsed) => {
+      this.blockElapsed += elapsed;
+    });
   }
   run() {
     if (Date.now() - this.start > this.tick) {
@@ -34,8 +41,21 @@ export class Timer {
     }
     return false;
   }
+  get elapsed() {
+    return Date.now() - this.startTime - this.blockElapsed;
+  }
 }
 
 export const rand = (min, max) => {
   return Math.floor(Math.random() * (max - min)) + min;
+};
+
+export const wrapAlert = (callback) => {
+  var _old_alert = window.alert;
+  window.alert = function () {
+    const start = Date.now();
+    _old_alert.apply(window, arguments);
+    const elapsed = Date.now() - start;
+    callback(elapsed);
+  };
 };

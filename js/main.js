@@ -28,9 +28,13 @@ const game = new GameManager(
   (score) => {
     document.getElementById("score").innerHTML = "현재 점수: " + score + "점";
   },
-  (score) => {
+  (result) => {
     document.getElementById("start").innerHTML = "재시작";
-    alert("game over! score: " + score);
+    alert(
+      `game over! 점수: ${result.score}, 삭제한 라인 수: ${result.clearedLines}, 버틴 시간: ${
+        result.elapsed / 1000
+      }초`
+    );
   }
 );
 

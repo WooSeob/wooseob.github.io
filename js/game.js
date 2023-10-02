@@ -68,8 +68,11 @@ export default class GameManager {
     this.eventBus.on(InternalEvent.ScoreChanged, (score) => {
       onScoreChange(score);
     });
-    this.eventBus.on(InternalEvent.GameOvered, (score) => {
-      onGameOver(score);
+    this.eventBus.on(InternalEvent.GameOvered, (result) => {
+      onGameOver({
+        ...result,
+        elapsed: this.timer.elapsed,
+      });
     });
   }
 
@@ -84,13 +87,13 @@ export default class GameManager {
     this.timer = new Timer(400, () => {
       if (this.isRunning) {
         this.eventBus.emit(InternalEvent.TimerTick);
-        this.handle();
+        this._handle();
       }
     });
     this.level = new Level(this.eventBus, this.timer);
   }
 
-  handle() {
+  _handle() {
     if (this.board.isMoveable(this.current, Actions.Down)) {
       this.current = this.current.ofDown(1);
     } else {
