@@ -1,10 +1,9 @@
 import GameManager from "./game.js";
-import CanvasBoard from "./graphics/canvas.js";
 import { Actions } from "./tetris/constants.js";
 import Spawner from "./tetris/spawner.js";
 
-const canvas = document.getElementById("main-container");
-const canvasNext = document.getElementById("next-container");
+const mainCanvas = document.getElementById("main-container");
+const spawnCanvas = document.getElementById("next-container");
 
 function d(canvas) {
   const dpr = window.devicePixelRatio;
@@ -18,14 +17,14 @@ function d(canvas) {
   canvas.getContext("2d").scale(dpr, dpr);
 }
 
-d(canvas);
-d(canvasNext);
+d(mainCanvas);
+d(spawnCanvas);
 
 const game = new GameManager(
   20,
   10,
-  new CanvasBoard(canvas),
-  new CanvasBoard(canvasNext),
+  mainCanvas,
+  spawnCanvas,
   (score) => {
     document.getElementById("score").innerHTML = "현재 점수: " + score + "점";
   },

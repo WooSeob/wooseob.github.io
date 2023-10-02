@@ -1,4 +1,4 @@
-import Block, { createStyle } from "./graphics/block.js";
+import { MainView, SpawnView } from "./graphics/canvas.js";
 import { Actions, InternalEvent } from "./tetris/constants.js";
 import { Timer, EventBus } from "./utils.js";
 import Board from "./tetris/core.js";
@@ -15,20 +15,16 @@ export default class GameManager {
     },
   };
 
-  constructor(row, col, canvasBoard, nextCanvasBoard, onScoreChange, onGameOver) {
-    this.canvasBoard = canvasBoard;
-    this.nextCanvasBoard = nextCanvasBoard;
+  constructor(row, col, mainCanvas, spawnCanvas, onScoreChange, onGameOver) {
+    const blockWidth = Math.floor(mainCanvas.width / (col + 2));
+    const blockHeight = Math.floor(mainCanvas.height / (row + 2));
+
+    this.canvasBoard = new MainView(mainCanvas, blockWidth, blockHeight);
+    this.nextCanvasBoard = new SpawnView(spawnCanvas, blockWidth * 0.5, blockHeight * 0.5);
     this.row = row + 2;
     this.col = col + 2;
 
     this.board = new Board(this.row, this.col);
-    this.blockWidth = Math.floor(canvasBoard.width / (col + 2));
-    this.blockHeight = Math.floor(canvasBoard.height / (row + 2));
-    // this.blockWidth = 30;
-    // this.blockHeight = 30;
-
-    this.offsetX = this.blockWidth;
-    this.offsetY = this.blockHeight;
     console.log(this);
 
     this.eventBus = new EventBus();
@@ -110,40 +106,14 @@ export default class GameManager {
   }
 
   render() {
-    this.nextCanvasBoard.ctx.clearRect(
-      0,
-      0,
-      this.nextCanvasBoard.width,
-      this.nextCanvasBoard.height
-    );
-    this.canvasBoard.ctx.clearRect(0, 0, this.canvasBoard.width, this.canvasBoard.height);
+    this.canvasBoard.clear();
+    this.nextCanvasBoard.clear();
 
-    const drawBlock = (block) => {
-      const [x, y, color] = block;
-      new Block(
-        x * this.blockWidth,
-        y * this.blockHeight,
-        this.blockWidth,
-        this.blockHeight,
-        createStyle(color)
-      ).draw(this.canvasBoard.ctx);
-    };
-
-    // this.current.clear(this.canvasBoard.ctx);
-    this.board?.occupiedBlocks.forEach(drawBlock);
-
-    this.spawner?._next?.draw(
-      this.nextCanvasBoard.ctx,
-      { x: 0, y: 0 },
-      { width: this.blockWidth, height: this.blockHeight }
-    );
-    this.current?.draw(
-      this.canvasBoard.ctx,
-      { x: this.offsetX, y: this.offsetY },
-      { width: this.blockWidth, height: this.blockHeight }
-    );
+    this.canvasBoard.draw(this.board, this.current);
+    this.nextCanvasBoard.draw(this.spawner);
 
     this.timer?.run();
+
     this.canvasBoard.render();
     this.nextCanvasBoard.render();
   }
