@@ -20,7 +20,11 @@ export default class GameManager {
     const blockHeight = Math.floor(mainCanvas.height / (row + 2));
 
     this.canvasBoard = new MainView(mainCanvas, blockWidth, blockHeight);
-    this.nextCanvasBoard = new SpawnView(spawnCanvas, blockWidth * 0.5, blockHeight * 0.5);
+    this.nextCanvasBoard = new SpawnView(
+      spawnCanvas,
+      Math.floor(blockWidth * 0.7),
+      Math.floor(blockHeight * 0.7)
+    );
     this.row = row + 2;
     this.col = col + 2;
 
@@ -64,7 +68,7 @@ export default class GameManager {
   }
 
   start() {
-    this.spawner = new Spawner(this);
+    this.spawner = new Spawner(this, 3);
     this.board = new Board(this.row, this.col);
     this.score = new Score(this.eventBus);
 

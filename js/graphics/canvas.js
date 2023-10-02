@@ -51,10 +51,20 @@ export class MainView extends CanvasBoard {
 
 export class SpawnView extends CanvasBoard {
   draw(spawner) {
-    spawner?._next?.draw(
-      this.ctx,
-      { x: 0, y: 0 },
-      { width: this.blockWidth, height: this.blockHeight }
-    );
+    if (!spawner) {
+      return;
+    }
+
+    const margin = 20;
+    let offset = 0;
+
+    spawner.allNexts?.forEach((tetromino) => {
+      tetromino.draw(
+        this.ctx,
+        { x: 0, y: offset },
+        { width: this.blockWidth, height: this.blockHeight }
+      );
+      offset += tetromino.arr.length * this.blockHeight + margin;
+    });
   }
 }

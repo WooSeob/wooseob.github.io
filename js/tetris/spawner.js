@@ -5,7 +5,6 @@ import { rand } from "../utils.js";
 import { createStyle } from "../graphics/block.js";
 
 export default class Spawner {
-  // _next = undefined;
   _nexts = [];
 
   originState = {};
@@ -14,9 +13,10 @@ export default class Spawner {
     this.next = this._spawnInternal(manager);
     this.config = manager.config;
 
-    this._nexts = Array(containingSize)
+    this._nexts = [];
+    Array(containingSize)
       .fill(0)
-      .map(() => this._spawnInternal(manager));
+      .forEach(() => (this.next = this._spawnInternal(manager)));
   }
 
   static TetrominoType = {
@@ -55,8 +55,8 @@ export default class Spawner {
     return tetromino;
   }
 
-  get _next() {
-    return this._nexts[0];
+  get allNexts() {
+    return this._nexts;
   }
 
   get next() {
