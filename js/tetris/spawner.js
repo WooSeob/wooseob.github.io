@@ -5,12 +5,18 @@ import { rand } from "../utils.js";
 import { createStyle } from "../graphics/block.js";
 
 export default class Spawner {
-  _next = undefined;
+  // _next = undefined;
+  _nexts = [];
+
   originState = {};
 
-  constructor(manager) {
+  constructor(manager, containingSize = 1) {
     this.next = this._spawnInternal(manager);
     this.config = manager.config;
+
+    this._nexts = Array(containingSize)
+      .fill(0)
+      .map(() => this._spawnInternal(manager));
   }
 
   static TetrominoType = {
@@ -49,17 +55,23 @@ export default class Spawner {
     return tetromino;
   }
 
+  get _next() {
+    return this._nexts[0];
+  }
+
   get next() {
     // 메인 캔버스에 스포닝 하기 위해 오프셋 정보 restore
-    if (this._next === undefined) {
+    if (this._nexts.length === 0) {
       return undefined;
     }
 
+    const _next = this._nexts.shift();
+
     return new Tetromino(
-      this._next.arr,
+      _next.arr,
       this.originState.x,
       this.originState.y,
-      this._next.style,
+      _next.style,
       this.config.dev.showBound
     );
   }
@@ -71,6 +83,7 @@ export default class Spawner {
       y: value.y,
     };
 
-    this._next = new Tetromino(value.arr, 0, 0, value.style, value.showBound);
+    this._nexts.push(new Tetromino(value.arr, 0, 0, value.style, value.showBound));
+    console.log(this._nexts);
   }
 }
