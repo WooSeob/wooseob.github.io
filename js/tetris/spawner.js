@@ -10,6 +10,7 @@ export default class Spawner {
 
   constructor(manager) {
     this.next = this._spawnInternal(manager);
+    this.config = manager.config;
   }
 
   static TetrominoType = {
@@ -27,7 +28,7 @@ export default class Spawner {
     const real = this.next;
     this.next = this._spawnInternal(manager);
 
-    const tetrominoWrapper = manager.config.spawningType ?? Spawner.TetrominoType.Default;
+    const tetrominoWrapper = this.config.spawningType ?? Spawner.TetrominoType.Default;
     return tetrominoWrapper(manager, real);
   }
 
@@ -37,8 +38,7 @@ export default class Spawner {
       getRandomTetrominoType(),
       center,
       0,
-      createStyle(getRandomColor()),
-      manager.config.dev.showBound
+      createStyle(getRandomColor())
     );
 
     // 랜덤 횟수 만큼 회전한 테트로미노를 생성
@@ -60,7 +60,7 @@ export default class Spawner {
       this.originState.x,
       this.originState.y,
       this._next.style,
-      this._next.showBound
+      this.config.dev.showBound
     );
   }
 

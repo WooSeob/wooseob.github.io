@@ -1,6 +1,7 @@
 import GameManager from "./game.js";
 import CanvasBoard from "./graphics/canvas.js";
 import { Actions } from "./tetris/constants.js";
+import Spawner from "./tetris/spawner.js";
 
 const canvas = document.getElementById("main-container");
 const canvasNext = document.getElementById("next-container");
@@ -76,6 +77,20 @@ document.getElementById("right").addEventListener("click", (e) => {
 });
 document.getElementById("rotate").addEventListener("click", (e) => {
   game.eventBus.emit(Actions.Rotate);
+});
+
+document.getElementById("opt-showGuide").addEventListener("click", (e) => {
+  game.config.spawningType = document.getElementById("opt-showGuide")?.checked
+    ? Spawner.TetrominoType.Guided
+    : Spawner.TetrominoType.Default;
+  document.getElementById("opt-showGuide").blur();
+  alert("다음 블럭부터 적용됩니다.");
+});
+
+document.getElementById("opt-dev-showBound").addEventListener("click", (e) => {
+  game.config.dev.showBound = document.getElementById("opt-dev-showBound")?.checked;
+  document.getElementById("opt-dev-showBound").blur();
+  alert("다음 블럭부터 적용됩니다.");
 });
 
 function render() {
