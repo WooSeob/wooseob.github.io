@@ -1,12 +1,16 @@
 import Block, { createEmptyDashedStyle, createStyle } from "../graphics/block.js";
 import { Actions } from "./constants.js";
 
+// 여러개의 블록이 모여서 구성된 테트로미노를 추상화한 클래스
 export default class Tetromino {
   // blocks = [];
   constructor(arr, x, y, style, showBound = false) {
+    // 2차원 배열을 통해 테트로미노의 모양을 정의함
     this.arr = arr;
+    // x, y : 해당 테트로미노의 2차원배열의 0,0(좌측 상단)좌표가 보드에서 위치하는 좌표
     this.x = x;
     this.y = y;
+    // 블럭의 스타일은 외부에서 주입받음
     this.style = style;
     this.showBound = showBound;
   }
@@ -24,7 +28,6 @@ export default class Tetromino {
           block.height,
           this.style
         ).draw(ctx);
-        // this.blocks.push(block);
       }
     }
 
@@ -61,6 +64,7 @@ export default class Tetromino {
   }
 }
 
+// 실제 테트로미노를 기반으로 바닥에 떨어졌을떄의 모습을 함께 보여주는 테트로미노
 export class GuidedTetromino {
   constructor(real, guide, board) {
     this.real = real;
@@ -68,6 +72,7 @@ export class GuidedTetromino {
     this.board = board;
   }
 
+  // 외부에서 참조하는 부분은 모두 실제 테트로미노의 값을 기준으로 반환
   get x() {
     return this.real.x;
   }
@@ -100,6 +105,7 @@ export class GuidedTetromino {
   ofMove(dx, dy) {
     return new GuidedTetromino(
       this.real.ofMove(dx, dy),
+      // 상단에서 사영한 모습을 위해 guide 객체는 dy = 0 으로 생성함
       GuidedTetromino.createGuide(this.board, this.real.ofMove(dx, 0)),
       this.board
     );
@@ -114,9 +120,10 @@ export class GuidedTetromino {
       real.arr,
       real.x,
       real.y,
-      createEmptyDashedStyle(real.style.baseColor),
+      createEmptyDashedStyle(real.style.baseColor), // 가이드는 대시 스타일로 생성
       real.showBound
     );
+    // 하단으로 갈때까지 간 모습을 얻어낸다
     while (board.isMoveable(guide, Actions.Down)) {
       guide = guide.ofDown(1);
     }

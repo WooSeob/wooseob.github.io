@@ -16,18 +16,18 @@ export class EventBus {
 
 export class Timer {
   blockElapsed = 0;
+  prev = undefined;
+
   constructor(tick, callback) {
     this.tick = tick;
     const now = Date.now();
     this.start = now;
     this.startTime = now;
     this.callback = callback;
-
-    wrapAlert((elapsed) => {
-      this.blockElapsed += elapsed;
-    });
   }
-  run() {
+
+  run(timestamp) {
+    this._accumulatePausedTime(Math.floor(timestamp));
     if (Date.now() - this.start > this.tick) {
       this.callback();
       this.start = Date.now();
@@ -41,6 +41,21 @@ export class Timer {
     }
     return false;
   }
+
+  _accumulatePausedTime(timestamp) {
+    if (this.prev === undefined) {
+      this.prev = timestamp;
+    }
+
+    const diff = timestamp - this.prev;
+    if (diff > 160) {
+      console.log(diff);
+      this.blockElapsed += diff;
+    }
+
+    this.prev = timestamp;
+  }
+
   get elapsed() {
     return Date.now() - this.startTime - this.blockElapsed;
   }

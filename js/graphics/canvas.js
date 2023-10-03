@@ -1,4 +1,7 @@
 import Block, { createStyle } from "./block.js";
+
+// 게임 내에서 Canvas Api를 사용하기 위해 분리한 추상화 클래스
+// 각 캔버스 영역의 width, height, context등을 가짐
 export default class CanvasBoard {
   constructor(canvas, blockWidth, blockHeight) {
     canvas.offscreenCanvas = document.createElement("canvas");
@@ -13,6 +16,8 @@ export default class CanvasBoard {
     this.offsetX = this.blockWidth;
     this.offsetY = this.blockHeight;
 
+    // canvas 성능 최적화를 위한 offscreenCanvas
+    // see: https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Optimizing_canvas#scaling_canvas_using_css_transforms
     this.ctx = canvas.offscreenCanvas.getContext("2d", { willReadFrequently: true });
     this._mainCtx = canvas.getContext("2d");
   }
@@ -20,7 +25,11 @@ export default class CanvasBoard {
   clear() {
     this.ctx.clearRect(0, 0, this.width, this.height);
   }
-  draw() {}
+
+  draw() {
+    console.error("please implement");
+  }
+
   render() {
     this._mainCtx.putImageData(this.ctx.getImageData(0, 0, this.width, this.height), 0, 0);
   }
@@ -55,6 +64,7 @@ export class SpawnView extends CanvasBoard {
       return;
     }
 
+    // 스포너 캔버스에서 세로 배치하기 위해 offset 정보를 관리
     const margin = 20;
     let offset = 0;
 
