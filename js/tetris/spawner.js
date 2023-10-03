@@ -4,6 +4,7 @@ import Tetromino, { GuidedTetromino } from "./model.js";
 import { rand } from "../utils.js";
 import { createStyle } from "../graphics/block.js";
 
+// 다음에 나타날 N개의 테트로미노를 관리하는 클래스
 export default class Spawner {
   _nexts = [];
 
@@ -14,11 +15,14 @@ export default class Spawner {
     this.config = manager.config;
 
     this._nexts = [];
+    // 미리 보여줄 N개 만큼 미리 생성.
+    // set 메서드를 타기 위해 this.next 할당함
     Array(containingSize)
       .fill(0)
       .forEach(() => (this.next = this._spawnInternal(manager)));
   }
 
+  // 생성될 테트로미노 팩토리(wrapper)
   static TetrominoType = {
     Default: (manager, tetromino) => tetromino,
     Guided: (manager, tetromino) => {
@@ -34,6 +38,7 @@ export default class Spawner {
     const real = this.next;
     this.next = this._spawnInternal(manager);
 
+    // config에 맞게 테트로미노를 래핑해서 반환
     const tetrominoWrapper = this.config.spawningType ?? Spawner.TetrominoType.Default;
     return tetrominoWrapper(manager, real);
   }
@@ -72,6 +77,8 @@ export default class Spawner {
       this.originState.x,
       this.originState.y,
       _next.style,
+      // N개의 블록이 생성되는 시점이 아닌,
+      // 메인 화면에 불러오는 시점의 config 조건을 기준으로 생성
       this.config.dev.showBound
     );
   }
